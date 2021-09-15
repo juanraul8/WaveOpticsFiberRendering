@@ -286,13 +286,13 @@ Spectrum HairBSDF::f(const Vector3f &wo, const Vector3f &wi) const {
     Float sinThetaO = wo.x;
     Float cosThetaO = SafeSqrt(1 - Sqr(sinThetaO));
     Float phiO = std::atan2(wo.z, wo.y);
-    phiO += ori * M_PI/180;
+    phiO += ori * Pi /180;
 
     // Compute hair coordinate system terms related to _wi_
     Float sinThetaI = wi.x;
     Float cosThetaI = SafeSqrt(1 - Sqr(sinThetaI));
     Float phiI = std::atan2(wi.z, wi.y);
-    phiI += ori * M_PI / 180.0;  // Take orientation into account.
+    phiI += ori * Pi / 180.0;  // Take orientation into account.
 
     // resolution
     int thetanum = 100; // longitudinal angle resolution
@@ -313,7 +313,7 @@ Spectrum HairBSDF::f(const Vector3f &wo, const Vector3f &wi) const {
     Float phiInew = phiI;
     while (phiInew > 2*Pi) phiInew -= 2 * Pi;
     while (phiInew < 0) phiInew += 2 * Pi;
-    Float phiunit = M_PI * 2 / (Float)phiinum;
+    Float phiunit = Pi * 2 / (Float)phiinum;
     if (crosssection==0){
       // circle
       phionum = 1;
@@ -398,10 +398,14 @@ std::array<Float, pMax + 1> HairBSDF::ComputeApPdf(Float cosThetaO) const {
 
     //std::cout<<"wavelengthindex "<<wavelengthindex<<std::endl;
     int tmpindex = wavelengthindex*num_samples + floortheta*num_nor + floorphio*phiinum;
-    Float cdf[phiinum];
+    
+    //Float cdf[phiinum];
+    Float *cdf = new Float[phiinum];
+    
     for (int i = 0; i < phiinum; ++i){
       cdf[i] = CDFTABLE[tmpindex + i];
     }
+    
     int index, indexplus;
     Float weight;
     for (index = 0; index < phiinum; ++index){
@@ -422,6 +426,8 @@ std::array<Float, pMax + 1> HairBSDF::ComputeApPdf(Float cosThetaO) const {
 
     pdf = PDFTABLE[wavelengthindex*num_samples+floortheta*num_nor+floorphio*phiinum+index];
 
+    delete cdf;
+
     return dphi;
   }
 
@@ -432,7 +438,7 @@ Spectrum HairBSDF::Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &u2,
     Float sinThetaO = wo.x;
     Float cosThetaO = SafeSqrt(1 - Sqr(sinThetaO));
     Float phiO = std::atan2(wo.z, wo.y);
-    phiO += ori * M_PI/180.0;    // Take orientation into account.
+    phiO += ori * Pi/180.0;    // Take orientation into account.
 
     // Derive four random samples from _u2_
     Point2f u[2] = {DemuxFloat(u2[0]), DemuxFloat(u2[1])};
@@ -461,7 +467,7 @@ Spectrum HairBSDF::Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &u2,
     Float phiOnew = phiO;
     while (phiOnew > 2*Pi) phiOnew -= 2 * Pi;
     while (phiOnew < 0) phiOnew += 2 * Pi;
-    Float phiunit = M_PI * 2 / (Float)phiinum;
+    Float phiunit = Pi * 2 / (Float)phiinum;
     if (crosssection==0){
       // circle
       phionum = 1;
@@ -501,7 +507,7 @@ Spectrum HairBSDF::Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &u2,
       phiI = samplephi(thetanum, phionum, phiinum, floortheta, floorphio, pdfazimuthal, phiunit, u[0][1]);
     }
     // rotate phiI back
-    phiI -= ori * M_PI/180;
+    phiI -= ori * Pi/180;
 
     // Compute _wi_ from sampled hair scattering angles
     *wi = Vector3f(sinThetaI, cosThetaI * std::cos(phiI),
@@ -522,13 +528,13 @@ Float HairBSDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
     Float sinThetaO = wo.x;
     Float cosThetaO = SafeSqrt(1 - Sqr(sinThetaO));
     Float phiO = std::atan2(wo.z, wo.y);
-    phiO += ori * M_PI/180;
+    phiO += ori * Pi /180;
 
     // Compute hair coordinate system terms related to _wi_
     Float sinThetaI = wi.x;
     Float cosThetaI = SafeSqrt(1 - Sqr(sinThetaI));
     Float phiI = std::atan2(wi.z, wi.y);
-    phiI += ori * M_PI/180;
+    phiI += ori * Pi /180;
 
     Float phi = phiI - phiO;
     Float pdf = 0;
@@ -548,7 +554,7 @@ Float HairBSDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
     Float phiInew = phiI;
     while (phiInew > 2*Pi) phiInew -= 2 * Pi;
     while (phiInew < 0) phiInew += 2 * Pi;
-    Float phiunit = M_PI * 2 / (Float)phiinum;
+    Float phiunit = Pi * 2 / (Float)phiinum;
     if (crosssection==0){
       // circle
       phionum = 1;

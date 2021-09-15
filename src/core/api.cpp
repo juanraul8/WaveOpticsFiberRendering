@@ -1599,23 +1599,23 @@ void pbrtObjectInstance(const std::string &name) {
 }
 
   // (Mandy Xia) Helper function for reading in fiber azimuthal scattering functions
-  void readindata(std::string dir, std::string subfile, std::string prefix, unsigned long long num_samples, unsigned long long num_nor, int phionum, int method){
+  void readindata(std::string subfile, std::string prefix, unsigned long long num_samples, unsigned long long num_nor, int phionum, int method){
     std::string filename;
     for (int i = 0; i < nSpectralSamples; i++){
       // read from binary
-      filename = dir+subfile+prefix+std::to_string(i)+".binary";
+      filename = data_folder+subfile+prefix+std::to_string(i)+".binary";
       std::ifstream myfile1(filename, std::ios::in|std::ios::binary);
       myfile1.read((char*)&BSDFTABLE[num_samples*i], num_samples*sizeof(float));
 
-      filename = dir+subfile+prefix+std::to_string(i)+"_nor.binary";
+      filename = data_folder+subfile+prefix+std::to_string(i)+"_nor.binary";
       std::ifstream myfile2(filename, std::ios::in|std::ios::binary);
       myfile2.read((char*)&PDFTABLE[num_samples*i], num_samples*sizeof(float));
 
-      filename = dir+subfile+prefix+std::to_string(i)+"_cdf.binary";
+      filename = data_folder+subfile+prefix+std::to_string(i)+"_cdf.binary";
       std::ifstream myfile3(filename, std::ios::in|std::ios::binary);
       myfile3.read((char*)&CDFTABLE[num_samples*i], num_samples*sizeof(float));
     }
-    filename = dir+subfile+"/ratio.binary";
+    filename = data_folder+subfile+"/ratio.binary";
     std::ifstream myfile4(filename, std::ios::in|std::ios::binary);
     if (method==0)
       myfile4.read((char*)&RATIO[0], num_nor*nSpectralSamples*sizeof(float)); // wave
@@ -1624,24 +1624,25 @@ void pbrtObjectInstance(const std::string &name) {
   }
 
   // (Mandy Xia) Helper function for reading in fiber azimuthal scattering functions
-  void readintextured(int color, std::string dir, std::string subfile, std::string prefix, unsigned long long num_samples, unsigned long long num_nor, int phionum, int method){
+  void readintextured(int color, std::string subfile, std::string prefix, unsigned long long num_samples, unsigned long long num_nor, int phionum, int method){
     std::string filename;
     for (int index = 0; index < color; index++){
       for (int i = 0; i < nSpectralSamples; i++){
         // read from binary
-        filename = dir+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+".binary";
+        filename = data_folder+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+".binary";
         std::ifstream myfile1(filename, std::ios::in|std::ios::binary);
         myfile1.read((char*)&BSDFTABLE[num_samples*nSpectralSamples*index+num_samples*i], num_samples * sizeof(float));
 
-        filename = dir+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_nor.binary";
+        filename = data_folder+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_nor.binary";
         std::ifstream myfile2(filename, std::ios::in|std::ios::binary);
         myfile2.read((char*)&PDFTABLE[num_samples*nSpectralSamples*index+num_samples*i], num_samples * sizeof(float));
 
-        filename = dir+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_cdf.binary";
+        filename = data_folder+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_cdf.binary";
         std::ifstream myfile3(filename, std::ios::in|std::ios::binary);
         myfile3.read((char*)&CDFTABLE[num_samples*nSpectralSamples*index+num_samples*i], num_samples * sizeof(float));
       }
-      filename = dir+subfile+"/ratio.binary";
+      filename = data_folder+subfile+"/ratio.binary";
+      
       std::ifstream myfile4(filename, std::ios::in|std::ios::binary);
       if (method==0)
         myfile4.read((char*)&RATIO[index*num_nor], nSpectralSamples*num_nor*sizeof(float)); // wave
@@ -1661,7 +1662,7 @@ void pbrtObjectInstance(const std::string &name) {
     std::cout<<"color: "<<color<<std::endl;
     fibertype = type;
     std::string prefix, dir;
-    dir = "../data/";
+        
     if (method ==0){
       prefix = "/TEM_";
       std::cout<<"method: wave optics"<<std::endl;
@@ -1687,9 +1688,9 @@ void pbrtObjectInstance(const std::string &name) {
     unsigned long long num_samples = phiinum * thetanum * phionum;
     unsigned long long num_nor = phiinum * thetanum;
     if (color==1)
-      readindata(dir, subfile, prefix, num_samples, num_nor, phionum, method);
+      readindata(subfile, prefix, num_samples, num_nor, phionum, method);
     else
-      readintextured(color, dir, subfile, prefix, num_samples, num_nor, phionum, method);
+      readintextured(color, subfile, prefix, num_samples, num_nor, phionum, method);
 
     std::cout<<"BSDFTABLE[0] "<<BSDFTABLE[0]<<std::endl;
     std::cout<<"PDFTABLE[0] "<<PDFTABLE[0]<<std::endl;

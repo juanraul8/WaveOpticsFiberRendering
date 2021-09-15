@@ -94,6 +94,12 @@ void pbrtParseString(std::string str);
 //(Mandy Xia) Read fiber azimuthal function
 void readBSDF(int type, std::string subfile, int color, int method);
 
+#if defined(__WIN32__)
+    std::string data_folder = "../../data/";
+#else
+    std::string data_folder = "../data/";
+#endif
+
 }  // namespace pbrt
 
 #endif  // PBRT_CORE_API_H
