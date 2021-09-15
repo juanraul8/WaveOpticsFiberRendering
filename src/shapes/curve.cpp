@@ -414,7 +414,7 @@ bool Curve::recursiveIntersect(const Ray &ray, Float *tHit,
           int floortheta = std::floor(asino / unit);
           Float phiO = std::atan2(wo_local.z, wo_local.y);
           // according to ori, rotate counter clockwise
-          phiO += ori * M_PI/180.0;
+          phiO += ori * Pi/180.0;
 
           int phionum, floorphio;
           Float phiOnew = phiO;
@@ -445,9 +445,14 @@ bool Curve::recursiveIntersect(const Ray &ray, Float *tHit,
           }
           int index = ray.wavelengthindex*thetanum*phionum+floortheta*phionum+floorphio;
           Float curratio = 0;
+          
+          /* Original: do not compile using Visual Studio
           if (!(std::isinf(index) || std::isnan(index))){
             curratio = RATIO[index];
-          }
+          }*/
+
+          curratio = RATIO[index];
+          
           curratio = Clamp(curratio, 0, 1);
 
           Float h = 2 * v - 1;
