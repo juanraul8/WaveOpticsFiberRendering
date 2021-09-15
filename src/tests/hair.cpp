@@ -37,6 +37,8 @@
 #include "rng.h"
 #include "sampling.h"
 
+#include "api.h" //Juan changes
+
 using namespace pbrt;
 
 // Hair Tests
@@ -93,6 +95,10 @@ TEST(Hair, Pow) {
 }
 
 TEST(Hair, WhiteFurnace) {
+
+    // Read precomputed table
+    readBSDF(1, "redhair", 1, 0);
+
     RNG rng;
     Vector3f wo = UniformSampleSphere({rng.UniformFloat(), rng.UniformFloat()});
     for (Float beta_m = .1; beta_m < 1; beta_m += .2) {
@@ -103,7 +109,7 @@ TEST(Hair, WhiteFurnace) {
             for (int i = 0; i < count; ++i) {
                 Float h = -1 + 2. * rng.UniformFloat();
                 Spectrum sigma_a = 0.f;
-                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 0, 0, 0);
+                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 1, 0.0f, 0);
                 Vector3f wi = UniformSampleSphere(
                     {rng.UniformFloat(), rng.UniformFloat()});
                 sum += hair.f(wo, wi) * AbsCosTheta(wi);
@@ -115,6 +121,10 @@ TEST(Hair, WhiteFurnace) {
 }
 
 TEST(Hair, WhiteFurnaceSampled) {
+
+    // Read precomputed table
+    readBSDF(1, "redhair", 1, 0);
+
     RNG rng;
     Vector3f wo = UniformSampleSphere({rng.UniformFloat(), rng.UniformFloat()});
     for (Float beta_m = .1; beta_m < 1; beta_m += .2) {
@@ -124,7 +134,7 @@ TEST(Hair, WhiteFurnaceSampled) {
             for (int i = 0; i < count; ++i) {
                 Float h = -1 + 2. * rng.UniformFloat();
                 Spectrum sigma_a = 0.f;
-                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 0, 0, 0);
+                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 1, 0.0f, 0);
 
                 Vector3f wi;
                 Float pdf;
@@ -139,6 +149,10 @@ TEST(Hair, WhiteFurnaceSampled) {
 }
 
 TEST(Hair, SamplingWeights) {
+
+    // Read precomputed table
+    readBSDF(1, "redhair", 1, 0);
+
     RNG rng;
     for (Float beta_m = .1; beta_m < 1; beta_m += .2)
         for (Float beta_n = .4; beta_n < 1; beta_n += .2) {
@@ -147,7 +161,7 @@ TEST(Hair, SamplingWeights) {
                 // Check _HairBSDF::Sample\_f()_ sample weight
                 Float h = -1 + 2 * rng.UniformFloat();
                 Spectrum sigma_a = 0;
-                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 0, 0, 0);
+                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 1, 0.0f, 0);
                 Vector3f wo = UniformSampleSphere(
                     {rng.UniformFloat(), rng.UniformFloat()});
                 Vector3f wi;
@@ -165,6 +179,10 @@ TEST(Hair, SamplingWeights) {
 }
 
 TEST(Hair, SamplingConsistency) {
+
+    // Read precomputed table
+    readBSDF(1, "redhair", 1, 0);
+
     RNG rng;
     for (Float beta_m = .2; beta_m < 1; beta_m += .2)
         for (Float beta_n = .4; beta_n < 1; beta_n += .2) {
@@ -179,7 +197,7 @@ TEST(Hair, SamplingConsistency) {
                 // Compute estimates of scattered radiance for hair sampling
                 // test
                 Float h = -1 + 2 * rng.UniformFloat();
-                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 0, 0, 0);
+                HairBSDF hair(h, 1.55, sigma_a, beta_m, beta_n, 0.f, 1, 0.0f, 0);
                 Vector3f wi;
                 Float pdf;
                 Point2f u = {rng.UniformFloat(), rng.UniformFloat()};

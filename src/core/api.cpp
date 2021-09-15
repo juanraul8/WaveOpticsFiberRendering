@@ -1607,7 +1607,8 @@ void pbrtObjectInstance(const std::string &name) {
       std::ifstream myfile1(filename, std::ios::in|std::ios::binary);
       myfile1.read((char*)&BSDFTABLE[num_samples*i], num_samples*sizeof(float));
 
-      filename = data_folder+subfile+prefix+std::to_string(i)+"_nor.binary";
+      //filename = data_folder+subfile+prefix+std::to_string(i)+"_nor.binary";// original data (e.g. 1 layer fiber)
+      filename = data_folder + subfile + prefix + std::to_string(i) + "_pdf.binary";
       std::ifstream myfile2(filename, std::ios::in|std::ios::binary);
       myfile2.read((char*)&PDFTABLE[num_samples*i], num_samples*sizeof(float));
 
@@ -1633,7 +1634,8 @@ void pbrtObjectInstance(const std::string &name) {
         std::ifstream myfile1(filename, std::ios::in|std::ios::binary);
         myfile1.read((char*)&BSDFTABLE[num_samples*nSpectralSamples*index+num_samples*i], num_samples * sizeof(float));
 
-        filename = data_folder+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_nor.binary";
+        //filename = data_folder+subfile+std::to_string(index+1)+"_cross"+prefix+std::to_string(i)+"_nor.binary";// original data (e.g. 1 layer fiber)
+        filename = data_folder + subfile + std::to_string(index + 1) + "_cross" + prefix + std::to_string(i) + "_pdf.binary";
         std::ifstream myfile2(filename, std::ios::in|std::ios::binary);
         myfile2.read((char*)&PDFTABLE[num_samples*nSpectralSamples*index+num_samples*i], num_samples * sizeof(float));
 
